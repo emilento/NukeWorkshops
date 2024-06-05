@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.CI.AppVeyor;
 using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
@@ -201,8 +200,8 @@ partial class Build : NukeBuild
     }
 
     Target BackendTestsCodeCoverage => _ => _
-        .DependsOn(BackendTests)
         .Produces(BackendTestResultsDirectory / "*.zip")
+        .DependsOn(BackendTests)
         .Executes(() =>
         {
             ReportGenerator(s => s
