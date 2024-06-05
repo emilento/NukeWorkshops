@@ -66,6 +66,7 @@ partial class Build : NukeBuild
         );
 
     Target BackendAll => _ => _
+        .Produces(BackendTestResultsDirectory)
         .DependsOn(
             BackendClean,
             BackendBuild,
@@ -200,7 +201,6 @@ partial class Build : NukeBuild
     }
 
     Target BackendTestsCodeCoverage => _ => _
-        .Produces(BackendTestResultsDirectory / "*.zip")
         .DependsOn(BackendTests)
         .Executes(() =>
         {

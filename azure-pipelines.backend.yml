@@ -43,3 +43,8 @@ stages:
             displayName: 'Run: BackendClean, BackendRestore, BackendBuild, BackendTests, BackendTestsCodeCoverage, BackendAll'
             inputs:
               script: './build.cmd BackendClean BackendRestore BackendBuild BackendTests BackendTestsCodeCoverage BackendAll --skip'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish: TestResults'
+            inputs:
+              artifactName: TestResults
+              pathToPublish: 'NukeWorkshops.Server.Tests/TestResults'
