@@ -33,7 +33,7 @@ partial class Build : NukeBuild
 
     protected override void OnBuildInitialized()
     {
-        Information("🚀 Build process started");
+        Information("🚀 Build process started...");
 
         base.OnBuildInitialized();
     }
@@ -202,6 +202,7 @@ partial class Build : NukeBuild
 
     Target BackendTestsCodeCoverage => _ => _
         .DependsOn(BackendTests)
+        .Produces(BackendTestResultsDirectory / "*.zip")
         .Executes(() =>
         {
             ReportGenerator(s => s
@@ -218,13 +219,15 @@ partial class Build : NukeBuild
                 .SetFileFilters("-*Program.cs")
             );
 
+            (BackendTestResultsDirectory / "reports").CompressTo(BackendTestResultsDirectory / "BackendTestResults.zip");
+
             string link = BackendTestResultsDirectory / "reports" / "index.html";
             Information("Code coverage report: {Link}", $"\x1b]8;;file://{link.Replace('\\', '/')}\x1b\\{link}\x1b]8;;\x1b\\");
 
             string jsonSummary = BackendTestResultsDirectory / "reports" / "Summary.json";
             var jsonText = File.ReadAllText(jsonSummary);
             var jsonNode = JsonSerializer.Deserialize<JsonNode>(jsonText);
-            var lineCoverage = jsonNode["summary"]["linecoverage"].GetValue<double>() / 100f;
+            var lineCoverage = jsonNode["summary"]["linecoverage"].GetValue<double>() / 100d;
 
             ReportSummary(s => s
                 .AddPairWhenValueNotNull("Line coverage", lineCoverage.ToString("P")));
