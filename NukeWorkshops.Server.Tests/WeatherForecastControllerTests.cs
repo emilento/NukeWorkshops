@@ -6,6 +6,11 @@ namespace NukeWorkshops.Server.Tests
 {
     public class WeatherForecastControllerTests
     {
+        private static readonly string[] Summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
         private readonly ILogger<WeatherForecastController> _mockLogger;
         private readonly WeatherForecastController _controller;
 
@@ -60,7 +65,7 @@ namespace NukeWorkshops.Server.Tests
             // Assert
             foreach (var forecast in result)
             {
-                Assert.Contains(forecast.Summary, new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" });
+                Assert.Contains(forecast.Summary, Summaries);
             }
         }
     }

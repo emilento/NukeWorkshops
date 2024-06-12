@@ -40,6 +40,6 @@ stages:
               restoreKeys: $(Agent.OS) | nuget-packages
               path: $(HOME)/.nuget/packages
           - task: CmdLine@2
-            displayName: 'Run: BackendClean, BackendRestore, BackendBuild, BackendTests, BackendTestsCodeCoverage, BackendAll'
+            displayName: 'Run: BackendClean, BackendRestore, SonarScannerBegin, BackendBuild, BackendTests, BackendTestsCodeCoverage, SonarScannerEnd, BackendAll'
             inputs:
-              script: './build.cmd BackendClean BackendRestore BackendBuild BackendTests BackendTestsCodeCoverage BackendAll --skip'
+              script: './build.cmd BackendClean BackendRestore SonarScannerBegin BackendBuild BackendTests BackendTestsCodeCoverage SonarScannerEnd BackendAll --skip'

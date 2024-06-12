@@ -17,7 +17,7 @@
     FetchDepth = 0,
     PullRequestsDisabled = false,
     InvokedTargets = [nameof(BackendAll)],
-    NonEntryTargets = [nameof(BackendClean), nameof(BackendRestore), nameof(BackendBuild), nameof(BackendTests), nameof(BackendTestsCodeCoverage)],
+    NonEntryTargets = [nameof(SonarScannerBegin), nameof(SonarScannerEnd), nameof(BackendClean), nameof(BackendRestore), nameof(BackendBuild), nameof(BackendTests), nameof(BackendTestsCodeCoverage)],
     ExcludedTargets = [nameof(FrontendClean), nameof(FrontendRestore), nameof(FrontendBuild), nameof(FrontendAll)]
 )]
 partial class Build

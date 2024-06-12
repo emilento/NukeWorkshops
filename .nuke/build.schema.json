@@ -82,13 +82,22 @@
               "FrontendAll",
               "FrontendBuild",
               "FrontendClean",
-              "FrontendRestore"
+              "FrontendRestore",
+              "SonarScannerBegin",
+              "SonarScannerEnd"
             ]
           }
         },
         "Solution": {
           "type": "string",
           "description": "Path to a solution file that is automatically loaded"
+        },
+        "SonarQubeServer": {
+          "type": "string"
+        },
+        "SonarQubeToken": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "Target": {
           "type": "array",
@@ -106,7 +115,9 @@
               "FrontendAll",
               "FrontendBuild",
               "FrontendClean",
-              "FrontendRestore"
+              "FrontendRestore",
+              "SonarScannerBegin",
+              "SonarScannerEnd"
             ]
           }
         },

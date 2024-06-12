@@ -21,6 +21,13 @@ partial class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
+    [Parameter]
+    [Secret]
+    readonly string SonarQubeToken = string.Empty;
+
+    [Parameter]
+    readonly string SonarQubeServer = "http://192.168.144.120:9000";
+
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
 
@@ -35,10 +42,12 @@ partial class Build : NukeBuild
 
     Target BackendAll => _ => _
         .DependsOn(
+            SonarScannerBegin,
             BackendRestore,
             BackendBuild,
             BackendTests,
-            BackendTestsCodeCoverage
+            BackendTestsCodeCoverage,
+            SonarScannerEnd
         );
 
     Target FrontendAll => _ => _

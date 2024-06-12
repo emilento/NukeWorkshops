@@ -11,6 +11,7 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.ReportGenerator;
+using Nuke.Common.Tools.SonarScanner;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
@@ -50,6 +51,34 @@ partial class Build
             Information("Backend clean completed");
         });
 
+    Target SonarScannerBegin => _ => _
+        .OnlyWhenStatic(() => !string.IsNullOrWhiteSpace(SonarQubeToken))
+        .Executes(() =>
+        {
+            SonarScannerTasks.SonarScannerBegin(s => s
+                .SetFramework("net8.0")
+                .SetServer(SonarQubeServer)
+                .SetLogin(SonarQubeToken)
+                .SetProjectKey("NukeWorkshops")
+                .SetName("NukeWorkshops")
+                .SetVersion(GitVersion.FullSemVer)
+                .SetSourceExclusions("**/obj/**,**/*.dll,**/*.exe")
+                .SetDuplicationExclusions("**/Program.cs")
+                .SetCoverageExclusions("**/Program.cs")
+                .SetOpenCoverPaths("**/coverage.opencover.xml")
+                .SetVSTestReports("**/*.trx")
+                .SetSourceEncoding("UTF-8")
+            );
+        });
+
+    Target SonarScannerEnd => _ => _
+        .DependsOn(BackendTestsCodeCoverage)
+        .OnlyWhenStatic(() => !string.IsNullOrWhiteSpace(SonarQubeToken))
+        .Executes(() =>
+        {
+            SonarScannerTasks.SonarScannerEnd(s => s.SetLogin(SonarQubeToken));
+        });
+
     Target BackendRestore => _ => _
         .DependsOn(BackendClean)
         .Executes(() =>
@@ -58,11 +87,12 @@ partial class Build
                 .EnableNoCache()));
 
     Target BackendBuild => _ => _
+        .DependsOn(SonarScannerBegin)
         .DependsOn(BackendRestore)
         .Executes(() =>
         {
             ReportSummary(s => s
-                .AddPairWhenValueNotNull("Version", GitVersion.SemVer));
+                .AddPairWhenValueNotNull("Version", GitVersion.FullSemVer));
 
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
@@ -87,6 +117,9 @@ partial class Build
                 .AddRunSetting(
                     "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.DoesNotReturnAttribute",
                     "DoesNotReturnAttribute")
+                .AddRunSetting(
+                    "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format",
+                    "opencover")
                 .CombineWith(
                     BackendTestProjects,
                     (settings, project) => settings
@@ -134,7 +167,7 @@ partial class Build
                         "ReportGenerator.dll",
                         framework: "net8.0"))
                 .SetTargetDirectory(targetDirectory)
-                .AddReports(BackendTestResultsDirectory / "**/coverage.cobertura.xml")
+                .AddReports(BackendTestResultsDirectory / "**/coverage.opencover.xml")
                 .AddReportTypes(
                     ReportTypes.Cobertura,
                     ReportTypes.JsonSummary,
