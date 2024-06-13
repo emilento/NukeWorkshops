@@ -29,8 +29,8 @@ partial class Build
 
     Target Deploy => _ => _
         .Produces(DeploymentFile)
-        .DependsOn(BackendAll)
-        .DependsOn(FrontendAll)
+        //.DependsOn(BackendAll)
+        //.DependsOn(FrontendAll)
         .DependsOn(ProvisionInfra)
         .Executes(async () =>
         {
@@ -43,13 +43,12 @@ partial class Build
 
             FileSystemTasks.CopyDirectoryRecursively(
                 FrontendSourceDirectory / "dist",
-                ArtifactsDirectory,
+                ArtifactsDirectory / "wwwroot",
                 DirectoryExistsPolicy.Merge);
 
             Information("Compressing {Directory} to deployment.zip...", ArtifactsDirectory);
             ArtifactsDirectory.CompressTo(DeploymentFile);
 
-            Information("Deploying...");
             var publishingUserName = GetPulumiOutput("publishingUserName");
             var publishingPassword = GetPulumiOutput("publishingPassword");
             var base64Auth = Convert.ToBase64String(Encoding.Default.GetBytes($"{publishingUserName}:{publishingPassword}"));
@@ -58,6 +57,7 @@ partial class Build
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Auth);
             using var content = new StreamContent(stream);
+            Information("Deploying...");
             var response = await httpClient.PostAsync(zipDeployRequestUrl, content);
             Information("Deployment completed");
         });

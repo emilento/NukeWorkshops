@@ -14,8 +14,8 @@ return await Pulumi.Deployment.RunAsync(() =>
         new AppServicePlanArgs
         {
             ResourceGroupName = resourceGroup.Name,
-            Kind = "Linux",
-            Reserved = true,
+            Kind = "Windows",
+            Reserved = false,
             Sku = new SkuDescriptionArgs
             {
                 Tier = "Basic",
@@ -61,7 +61,7 @@ return await Pulumi.Deployment.RunAsync(() =>
                     },
                 },
                 NetFrameworkVersion = "v8.0",
-                LinuxFxVersion = "DOTNETCORE|8.0",
+                WindowsFxVersion = "DOTNETCORE|8.0",
             }
         });
 
