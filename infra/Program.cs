@@ -7,7 +7,7 @@ using Deployment = Pulumi.Deployment;
 
 return await Pulumi.Deployment.RunAsync(() =>
 {
-    var resourceGroup = new ResourceGroup($"rg-{Deployment.Instance.ProjectName}-{Deployment.Instance.StackName}");
+    var resourceGroup = new ResourceGroup($"rg-{Deployment.Instance.ProjectName.ToLowerInvariant()}-{Deployment.Instance.StackName}");
 
     var appServicePlan = new AppServicePlan(
         $"asp-{Deployment.Instance.ProjectName.ToLowerInvariant()}-{Deployment.Instance.StackName}",
