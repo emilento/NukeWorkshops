@@ -195,4 +195,17 @@ partial class Build
             ReportSummary(s => s
                 .AddPairWhenValueNotNull("Line coverage", lineCoverage.ToString("P")));
         });
+
+    Target BackendPublish => _ => _
+        .DependsOn(SonarScannerEnd)
+        .Executes(() =>
+            DotNetPublish(s => s
+                .SetProject(Solution.NukeWorkshops_Server)
+                .SetConfiguration(Configuration)
+                .EnableNoLogo()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
+                .SetInformationalVersion(GitVersion.InformationalVersion)));
 }

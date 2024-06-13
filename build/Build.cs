@@ -47,7 +47,8 @@ partial class Build : NukeBuild
             BackendBuild,
             BackendTests,
             BackendTestsCodeCoverage,
-            SonarScannerEnd
+            SonarScannerEnd,
+            BackendPublish
         );
 
     Target FrontendAll => _ => _
