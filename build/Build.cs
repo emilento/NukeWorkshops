@@ -26,7 +26,7 @@ partial class Build : NukeBuild
     readonly string SonarQubeToken = string.Empty;
 
     [Parameter]
-    readonly string SonarQubeServer = "http://192.168.144.120:9000";
+    readonly string SonarQubeServer = "http://localhost:9000";
 
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
@@ -47,7 +47,8 @@ partial class Build : NukeBuild
             BackendBuild,
             BackendTests,
             BackendTestsCodeCoverage,
-            SonarScannerEnd
+            SonarScannerEnd,
+            BackendPublish
         );
 
     Target FrontendAll => _ => _

@@ -76,13 +76,16 @@
               "BackendAll",
               "BackendBuild",
               "BackendClean",
+              "BackendPublish",
               "BackendRestore",
               "BackendTests",
               "BackendTestsCodeCoverage",
+              "Deploy",
               "FrontendAll",
               "FrontendBuild",
               "FrontendClean",
               "FrontendRestore",
+              "ProvisionInfra",
               "SonarScannerBegin",
               "SonarScannerEnd"
             ]
@@ -109,13 +112,16 @@
               "BackendAll",
               "BackendBuild",
               "BackendClean",
+              "BackendPublish",
               "BackendRestore",
               "BackendTests",
               "BackendTestsCodeCoverage",
+              "Deploy",
               "FrontendAll",
               "FrontendBuild",
               "FrontendClean",
               "FrontendRestore",
+              "ProvisionInfra",
               "SonarScannerBegin",
               "SonarScannerEnd"
             ]

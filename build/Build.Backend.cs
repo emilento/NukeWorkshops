@@ -19,6 +19,8 @@ using static Serilog.Log;
 
 partial class Build
 {
+    private const string Framework = "net8.0";
+
     [CI]
     readonly AzurePipelines AzurePipelines;
 
@@ -56,11 +58,11 @@ partial class Build
         .Executes(() =>
         {
             SonarScannerTasks.SonarScannerBegin(s => s
-                .SetFramework("net8.0")
+                .SetFramework(Framework)
                 .SetServer(SonarQubeServer)
                 .SetLogin(SonarQubeToken)
-                .SetProjectKey("NukeWorkshops")
-                .SetName("NukeWorkshops")
+                .SetProjectKey(nameof(Solution.NukeWorkshops_Server))
+                .SetName(nameof(Solution.NukeWorkshops_Server))
                 .SetVersion(GitVersion.FullSemVer)
                 .SetSourceExclusions("**/obj/**,**/*.dll,**/*.exe")
                 .SetDuplicationExclusions("**/Program.cs")
@@ -115,9 +117,6 @@ partial class Build
                 .SetDataCollector("XPlat Code Coverage")
                 .SetResultsDirectory(BackendTestResultsDirectory)
                 .AddRunSetting(
-                    "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.DoesNotReturnAttribute",
-                    "DoesNotReturnAttribute")
-                .AddRunSetting(
                     "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format",
                     "opencover")
                 .CombineWith(
@@ -165,7 +164,7 @@ partial class Build
                     NuGetToolPathResolver.GetPackageExecutable(
                         "ReportGenerator",
                         "ReportGenerator.dll",
-                        framework: "net8.0"))
+                        framework: Framework))
                 .SetTargetDirectory(targetDirectory)
                 .AddReports(BackendTestResultsDirectory / "**/coverage.opencover.xml")
                 .AddReportTypes(
@@ -195,4 +194,17 @@ partial class Build
             ReportSummary(s => s
                 .AddPairWhenValueNotNull("Line coverage", lineCoverage.ToString("P")));
         });
+
+    Target BackendPublish => _ => _
+        .DependsOn(SonarScannerEnd)
+        .Executes(() =>
+            DotNetPublish(s => s
+                .SetProject(Solution.NukeWorkshops_Server)
+                .SetConfiguration(Configuration)
+                .EnableNoLogo()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
+                .SetInformationalVersion(GitVersion.InformationalVersion)));
 }
