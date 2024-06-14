@@ -11,6 +11,8 @@ using static Serilog.Log;
 
 partial class Build
 {
+    private const string PulumiStackName = "dev";
+
     AbsolutePath InfrastructureDirectory => RootDirectory / "infra";
 
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -23,7 +25,7 @@ partial class Build
         {
             PulumiTasks.PulumiUp(_ => _
                 .SetCwd(InfrastructureDirectory)
-                .SetStack("dev")
+                .SetStack(PulumiStackName)
                 .EnableSkipPreview());
         });
 
@@ -66,7 +68,7 @@ partial class Build
     {
         PulumiTasks.PulumiStackSelect(_ => _
             .SetCwd(InfrastructureDirectory)
-            .SetStackName("dev"));
+            .SetStackName(PulumiStackName));
 
         return PulumiTasks.PulumiStackOutput(_ => _
                 .SetCwd(InfrastructureDirectory)
