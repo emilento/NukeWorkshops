@@ -29,8 +29,8 @@ partial class Build
 
     Target Deploy => _ => _
         .Produces(DeploymentFile)
-        //.DependsOn(BackendAll)
-        //.DependsOn(FrontendAll)
+        .DependsOn(BackendAll)
+        .DependsOn(FrontendAll)
         .DependsOn(ProvisionInfra)
         .Executes(async () =>
         {

@@ -14,7 +14,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -28,6 +27,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseHttpsRedirection();
-app.MapDefaultControllerRoute();
+app.MapControllers();
 
 app.Run();
