@@ -5,7 +5,7 @@ using Pulumi.AzureNative.Web;
 using Pulumi.AzureNative.Web.Inputs;
 using Deployment = Pulumi.Deployment;
 
-return await Pulumi.Deployment.RunAsync(() =>
+return await Deployment.RunAsync(() =>
 {
     var resourceGroup = new ResourceGroup($"rg-{Deployment.Instance.ProjectName.ToLowerInvariant()}-{Deployment.Instance.StackName}");
 
@@ -15,7 +15,6 @@ return await Pulumi.Deployment.RunAsync(() =>
         {
             ResourceGroupName = resourceGroup.Name,
             Kind = "Windows",
-            Reserved = false,
             Sku = new SkuDescriptionArgs
             {
                 Tier = "Basic",
@@ -38,27 +37,7 @@ return await Pulumi.Deployment.RunAsync(() =>
                     {
                         Name = "ASPNETCORE_ENVIRONMENT",
                         Value = "Development",
-                    },
-                    new NameValuePairArgs
-                    {
-                        Name = "ASPNETCORE_HTTP_PORTS",
-                        Value = "8080",
-                    },
-                    new NameValuePairArgs
-                    {
-                        Name = "ASPNETCORE_HTTPS_PORTS",
-                        Value = "8081",
-                    },
-                    new NameValuePairArgs
-                    {
-                        Name = "MSDEPLOY_RENAME_LOCKED_FILES",
-                        Value = "1",
-                    },
-                    new NameValuePairArgs
-                    {
-                        Name = "TZ",
-                        Value = "Europe/Warsaw",
-                    },
+                    }
                 },
                 NetFrameworkVersion = "v8.0",
                 WindowsFxVersion = "DOTNETCORE|8.0",
